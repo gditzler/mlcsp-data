@@ -1,0 +1,13 @@
+# spooner files 
+data/PM_single_truth_10000.txt
+data/PM_two_truth_10000.txt
+data/PM_One_Batch_1/
+data/PM_One_Batch_2/
+data/PM_single_truth_10000.csv
+data/PM_two_truth_10000.csv
+
+# files 
+*.pyc 
+
+# folders 
+.DS_Store
