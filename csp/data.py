@@ -105,7 +105,23 @@ class CSPDataset(Dataset):
             idx = idx.tolist()
         X, y = torch.from_numpy(self.data[index, :, :]), self.labels[index]
         return X, y 
+
+
+class CSPLoader: 
+    def __init__(self, pth_metadata:str, pth_data:list):
+        self.dataset = CSPDataset(pth_metadata=pth_metadata, pth_data=pth_data)
+    
+    def split(self, split_ratio:float=0.8, num_workers:int=4, batch_size:int=128):
+        train_size = int(split_ratio * self.dataset.n_files)
+        test_size = self.dataset.n_files - train_size
+        train_dataset, test_dataset = torch.utils.data.random_split(self.dataset, [train_size, test_size])
+        
+        dataloader_train = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+        dataloader_valid = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+
+        return dataloader_train, dataloader_valid
     
 
 if __name__ == '__main__': 
-    dat = CSPDataset(pth_data=['data/PM_One_Batch_1/', 'data/PM_One_Batch_2/'], pth_metadata='data/PM_single_truth_10000.csv')
+    dat = CSPLoader(pth_data=['data/PM_One_Batch_1/', 'data/PM_One_Batch_2/'], pth_metadata='data/PM_single_truth_10000.csv')
+    t, v = dat.split()
