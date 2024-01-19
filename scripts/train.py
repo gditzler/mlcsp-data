@@ -30,7 +30,12 @@ opts = {
     'split': 0.8, 
     'num_workers': 4,
     'batch_size': 256,
-    'path_data': ['data/PM_One_Batch_1/', 'data/PM_One_Batch_2/'],
+    'path_data': [
+        'data/PM_One_Batch_1/', 
+        'data/PM_One_Batch_2/', 
+        'data/PM_One_Batch_3/',
+        'data/PM_One_Batch_4/',  
+    ],
     'path_metadata': 'data/PM_single_truth_10000.csv',
 }
 

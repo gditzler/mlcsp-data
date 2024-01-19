@@ -20,3 +20,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# There is no real naming convention to the models other than they are named after
+# birds in the game Wingspan. 

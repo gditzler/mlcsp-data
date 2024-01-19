@@ -3,6 +3,24 @@ data/PM_single_truth_10000.txt
 data/PM_two_truth_10000.txt
 data/PM_One_Batch_1/
 data/PM_One_Batch_2/
+data/PM_One_Batch_3/
+data/PM_One_Batch_4/
+data/PM_One_Batch_5/
+data/PM_One_Batch_6/
+data/PM_One_Batch_7/
+data/PM_One_Batch_8/
+data/PM_One_Batch_9/
+data/PM_One_Batch_10/
+data/PM_Two_Batch_1/
+data/PM_Two_Batch_2/
+data/PM_Two_Batch_3/
+data/PM_Two_Batch_4/    
+data/PM_Two_Batch_5/
+data/PM_Two_Batch_6/
+data/PM_Two_Batch_7/
+data/PM_Two_Batch_8/
+data/PM_Two_Batch_9/
+data/PM_Two_Batch_10/
 data/PM_single_truth_10000.csv
 data/PM_two_truth_10000.csv
 
