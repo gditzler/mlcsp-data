@@ -52,7 +52,7 @@ class CSPDataset(Dataset):
         self.labels = np.zeros((self.n_files,), dtype=np.int16)
         
         for n, file_index in enumerate(self.file_index): 
-            slice = self.metadata[self.metadata['index_0'] == file_index]
+            slice = self.metadata[self.metadata['index_1'] == file_index]
             if len(slice) == 1: 
                 if slice['mod_type'].values[0] == 1 and slice['mod_variant'].values[0] == 1: 
                     self.label_name += ['BPSK']
@@ -81,6 +81,8 @@ class CSPDataset(Dataset):
                 elif slice['mod_type'].values[0] == 3 and slice['mod_variant'].values[0] == 3:
                     self.label_name += ['GMSK']
                     self.labels[n] = 8
+            else: 
+                raise(ValueError('There should only be one entry per file index.'))
         
     def _build_files(self): 
         self.n_files = np.array([len(glob.glob(folder + '*.tim')) for folder in self.pth_data]).sum().astype(int)
@@ -121,7 +123,3 @@ class CSPLoader:
 
         return dataloader_train, dataloader_valid
     
-
-if __name__ == '__main__': 
-    dat = CSPLoader(pth_data=['data/PM_One_Batch_1/', 'data/PM_One_Batch_2/'], pth_metadata='data/PM_single_truth_10000.csv')
-    t, v = dat.split()

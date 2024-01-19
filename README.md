@@ -7,6 +7,7 @@ conda create -n mlcsp python=3.10
 conda activate mlcsp
 mamba install pytorch::pytorch torchvision torchaudio -c pytorch
 mamba install pandas 
+pip install torchmetrics lightning wandb 
 ```
 
 ```

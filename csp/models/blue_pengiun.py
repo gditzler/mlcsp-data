@@ -19,3 +19,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+import torch.nn as nn 
+
+class BluePengiun(nn.Module): 
+    def __init__(self, num_classes:int=8):
+        super(BluePengiun).__init__()
+    
+    def forward(self, x): 
+        return x
