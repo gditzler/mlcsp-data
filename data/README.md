@@ -1,6 +1,22 @@
 # Getting the Dataset and Metadata 
 
-The data can be obtained from Chad Spooner's [Cycliostationay Signal Processing](https://cyclostationary.blog/2023/02/02/psk-qam-cochannel-data-set-for-modulation-recognition-researchers-cspb-ml-2023/) blog. His blog has more of a description of the data than you will find here. 
+The data can be obtained from Chad Spooner's [Cycliostationay Signal Processing](https://cyclostationary.blog/2023/02/02/psk-qam-cochannel-data-set-for-modulation-recognition-researchers-cspb-ml-2023/) blog. His blog has more of a description of the data than you will find here. Once you download the data, the folder structure in `data` should look like this:
+
+```
+data/PM_One_Batch_1/
+data/PM_One_Batch_2/
+data/PM_One_Batch_3/
+...
+data/PM_One_Batch_n/
+data/PM_single_truth_10000.csv
+data/PM_two_truth_10000.csv
+```
+
+Note that the truth files need to be generated from the original files on the cycliostationary blog. This can be done with the following command:
+
+```
+cat data/PM_single_truth_10000.txt | sed -e 's/  */,/g' > data/PM_single_truth_10000.csv 
+```
 
 
 | Mod-Type | Mod-Variant | Signal |
