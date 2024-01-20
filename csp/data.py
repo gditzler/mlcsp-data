@@ -103,8 +103,8 @@ class CSPDataset(Dataset):
                 n += 1        
     
     def __getitem__(self, index):
-        if torch.is_tensor(idx):
-            idx = idx.tolist()
+        if torch.is_tensor(index):
+            index = index.tolist()
         X, y = torch.from_numpy(self.data[index, :, :]), self.labels[index]
         return X, y 
 
@@ -119,7 +119,7 @@ class CSPLoader:
         train_dataset, test_dataset = torch.utils.data.random_split(self.dataset, [train_size, test_size])
         
         dataloader_train = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-        dataloader_valid = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+        dataloader_valid = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, persistent_workers=True)
 
         return dataloader_train, dataloader_valid
     

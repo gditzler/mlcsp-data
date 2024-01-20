@@ -28,19 +28,20 @@ import lightning as L
 
 
 class CSPModel(L.LightningModule): 
-    def __init__(self, model, opts:dict=None, num_classes:int=9):
+    def __init__(self, model, opts:dict=None):
         super().__init__() 
         self.model = model
         
         if opts is None: 
             opts = {
                 'optimizer': 'adam', 
-                'lr': 1e-3
+                'lr': 1e-3, 
+                'num_classes': 9, 
             }
         self.opts = opts
-        self.acc1 = torchmetrics.Accuracy(task='multiclass', num_classes=num_classes, top_k=1)
-        self.acc2 = torchmetrics.Accuracy(task='multiclass', num_classes=num_classes, top_k=2)
-        self.auc = torchmetrics.AUROC(num_classes=num_classes, task='multiclass')
+        self.acc1 = torchmetrics.Accuracy(task='multiclass', num_classes=opts['num_classes'], top_k=1)
+        self.acc2 = torchmetrics.Accuracy(task='multiclass', num_classes=opts['num_classes'], top_k=2)
+        # self.auc = torchmetrics.AUROC(num_classes=num_classes, task='multiclass')
         
         
     def forward(self, x): 
@@ -53,7 +54,7 @@ class CSPModel(L.LightningModule):
         self.log('train_loss', loss)
         self.log('train_acc1', self.acc1(phat, y))
         self.log('train_acc2', self.acc2(phat, y))
-        self.log('train_auc', self.auc(phat, y))
+        # self.log('train_auc', self.auc(phat, y))
         return loss
     
     def validation_step(self, batch, batch_index):
@@ -63,7 +64,7 @@ class CSPModel(L.LightningModule):
         self.log('valid_loss', loss)
         self.log('valid_acc1', self.acc1(phat, y))
         self.log('valid_acc2', self.acc2(phat, y))
-        self.log('valid_auc', self.auc(phat, y))
+        # self.log('valid_auc', self.auc(phat, y))
         return loss
     
     def test_step(self, batch, batch_index):
@@ -73,7 +74,7 @@ class CSPModel(L.LightningModule):
         self.log('test_loss', loss)
         self.log('test_acc1', self.acc1(phat, y))
         self.log('test_acc2', self.acc2(phat, y))
-        self.log('test_auc', self.auc(phat, y))
+        # self.log('test_auc', self.auc(phat, y))
         return loss
 
     def configure_optimizers(self):

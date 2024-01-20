@@ -21,4 +21,11 @@
 # SOFTWARE.
 
 # There is no real naming convention to the models other than they are named after
-# birds in the game Wingspan. 
+# birds in the game Wingspan.
+
+from csp.models.blue_pengiun import BluePengiun
+
+__all__ = [
+    'BluePengiun'
+]
+ 

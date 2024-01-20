@@ -23,20 +23,32 @@
 from lightning.pytorch.loggers import WandbLogger
 from csp.base import CSPModel
 from csp.data import CSPLoader
+from csp.models import BluePengiun
+from lightning import Trainer
 
 opts = {
     'lr': 1e-3,
     'optimizer': 'adam', 
+    'num_layers': 4,
+    'kernel_size': [512, 256, 128, 64],
     'split': 0.8, 
     'num_workers': 4,
     'batch_size': 256,
+    'max_epochs': 25,
     'path_data': [
         'data/PM_One_Batch_1/', 
         'data/PM_One_Batch_2/', 
-        'data/PM_One_Batch_3/',
-        'data/PM_One_Batch_4/',  
+        # 'data/PM_One_Batch_3/',
+        # 'data/PM_One_Batch_4/', 
+        # 'data/PM_One_Batch_5/', 
+        # 'data/PM_One_Batch_6/', 
+        # 'data/PM_One_Batch_7/',
+        # 'data/PM_One_Batch_8/',  
+        # 'data/PM_One_Batch_9/',  
+        # 'data/PM_One_Batch_10/',     
     ],
     'path_metadata': 'data/PM_single_truth_10000.csv',
+    'num_classes': 9
 }
 
 
@@ -49,4 +61,17 @@ if __name__ == '__main__':
     )
     # logger = WandbLogger(project="MLCSP", log_model=True)
     # logger.log_hyperparams(opts)
+    device = 'mps'
+    network = BluePengiun(num_classes=opts['num_classes'], num_layers=opts['num_layers'], kernel_size=opts['kernel_size'])
+    model = CSPModel(network, opts=opts)
+    model.to(device)
+    trainer = Trainer(
+        max_epochs=opts['max_epochs'], 
+        # logger=logger, 
+        accelerator='mps',
+        devices=1 
+        # gradient_clip_val=0.5,
+        # callbacks=None
+    )
+    trainer.fit(model, dataloader_train, dataloader_valid)
     
