@@ -49,7 +49,7 @@ class BluePengiun(nn.Module):
         
         for layer, pool in zip(self.LayersConv1D, self.LayersPooling):
             x = layer(x)
-            x = self.ReLU(x)
+            x = self.relu(x)
             x = pool(x)        
         # Global Average Pooling (GAP)
         x = torch.mean(x, dim=2)  # Calculate the mean along the spatial dimension (width)

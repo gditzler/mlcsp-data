@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import torch 
 from lightning.pytorch.loggers import WandbLogger
 from csp.base import CSPModel
 from csp.data import CSPLoader
@@ -61,15 +62,15 @@ if __name__ == '__main__':
     )
     # logger = WandbLogger(project="MLCSP", log_model=True)
     # logger.log_hyperparams(opts)
-    device = 'mps'
+    device = torch.device('mps')
     network = BluePengiun(num_classes=opts['num_classes'], num_layers=opts['num_layers'], kernel_size=opts['kernel_size'])
+    network.to(device)
     model = CSPModel(network, opts=opts)
     model.to(device)
     trainer = Trainer(
         max_epochs=opts['max_epochs'], 
         # logger=logger, 
-        accelerator='mps',
-        devices=1 
+        accelerator='cpu',
         # gradient_clip_val=0.5,
         # callbacks=None
     )
