@@ -30,8 +30,8 @@ from lightning import Trainer
 opts = {
     'lr': 1e-3,
     'optimizer': 'adam', 
-    'num_layers': 4,
-    'kernel_size': [512, 256, 128, 64],
+    'num_layers': 2,
+    'kernel_size': [128, 64],
     'split': 0.8, 
     'num_workers': 4,
     'batch_size': 256,
@@ -49,12 +49,14 @@ opts = {
         # 'data/PM_One_Batch_10/',     
     ],
     'path_metadata': 'data/PM_single_truth_10000.csv',
-    'num_classes': 9
+    'num_classes': 9, 
+    'seq_len': 2048 
 }
 
 
 if __name__ == '__main__': 
-    loader = CSPLoader(pth_data=opts['path_data'], pth_metadata=opts['path_metadata'])
+    device = 'cpu'
+    loader = CSPLoader(pth_data=opts['path_data'], pth_metadata=opts['path_metadata'], seq_len=opts['seq_len'])
     dataloader_train, dataloader_valid = loader.split(
         split_ratio=opts['split'], 
         num_workers=opts['num_workers'], 
@@ -62,7 +64,7 @@ if __name__ == '__main__':
     )
     # logger = WandbLogger(project="MLCSP", log_model=True)
     # logger.log_hyperparams(opts)
-    device = torch.device('mps')
+    
     network = BluePengiun(num_classes=opts['num_classes'], num_layers=opts['num_layers'], kernel_size=opts['kernel_size'])
     network.to(device)
     model = CSPModel(network, opts=opts)
@@ -70,7 +72,7 @@ if __name__ == '__main__':
     trainer = Trainer(
         max_epochs=opts['max_epochs'], 
         # logger=logger, 
-        accelerator='cpu',
+        accelerator=device,
         # gradient_clip_val=0.5,
         # callbacks=None
     )

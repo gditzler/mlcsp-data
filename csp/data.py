@@ -30,14 +30,14 @@ from torch.utils.data import Dataset, DataLoader
 
 class CSPDataset(Dataset):
     
-    def __init__(self, pth_metadata:str, pth_data:list):
+    def __init__(self, pth_metadata:str, pth_data:list, seq_len:int=262144):
         col_names = [
             'index_0', 'index_1', 'index_2', 'symbol_rate', 'carrier_freq_offset', 
             'mod_variant', 'mod_type', 'signal_power'
         ] 
         self.pth_metadata = pth_metadata
         self.pth_data = pth_data
-        self.n_samples = 262144
+        self.n_samples =  seq_len #262144
         self.metadata = pd.read_csv(self.pth_metadata, header=None, names=col_names)
         # set self.data 
         self._build_files()
@@ -100,7 +100,8 @@ class CSPDataset(Dataset):
                     data_sub = np.fromfile(f, dtype=np.float32)
                 self.data[n, 0, :] = data_sub[np.arange(0, 2*self.n_samples, 2)]
                 self.data[n, 1, :] = data_sub[np.arange(1, 2*self.n_samples, 2)]
-                n += 1        
+                n += 1  
+        self.data /= np.max(np.abs(self.data))  # Normalize the data to be between -1 and 1      
     
     def __getitem__(self, index):
         if torch.is_tensor(index):
@@ -110,12 +111,13 @@ class CSPDataset(Dataset):
 
 
 class CSPLoader: 
-    def __init__(self, pth_metadata:str, pth_data:list):
-        self.dataset = CSPDataset(pth_metadata=pth_metadata, pth_data=pth_data)
+    def __init__(self, pth_metadata:str, pth_data:list, seq_len:int=262144):
+        self.dataset = CSPDataset(pth_metadata=pth_metadata, pth_data=pth_data, seq_len=seq_len)
     
     def split(self, split_ratio:float=0.8, num_workers:int=4, batch_size:int=128):
         train_size = int(split_ratio * self.dataset.n_files)
         test_size = self.dataset.n_files - train_size
+        print(train_size, test_size)
         train_dataset, test_dataset = torch.utils.data.random_split(self.dataset, [train_size, test_size])
         
         dataloader_train = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)

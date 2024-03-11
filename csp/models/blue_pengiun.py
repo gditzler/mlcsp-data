@@ -24,35 +24,35 @@ import torch
 import torch.nn as nn 
 
 class BluePengiun(nn.Module): 
-    def __init__(self, num_classes:int=8, num_layers:int=4, kernel_size:list=[512, 256, 128, 64]):
+    def __init__(self, num_classes:int=8):
         super(BluePengiun, self).__init__()
         self.num_classes = num_classes
         
-        self.LayersConv1D = [nn.Conv1d(in_channels=2, out_channels=2**6, kernel_size=3, stride=1, padding=1)]
-        for i in range(num_layers-1):
-            self.LayersConv1D += [
-                nn.Conv1d(
-                    in_channels=2**(6+i), 
-                    out_channels=2**(7+i), 
-                    kernel_size=kernel_size[i], 
-                    stride=1, padding=1
-            )]
-        
+        def conv_block(in_channels, out_channels, kernel_size, stride, padding):
+            return nn.Sequential(
+                nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding),
+                nn.ReLU(),
+                nn.MaxPool1d(kernel_size=2, stride=1, padding=0)
+            )
+         
+        self.fe = nn.Sequential(
+            conv_block(2, 32, 16, 1, 0), 
+            conv_block(32, 64, 32, 1, 0),
+            conv_block(64, 96, 64, 1, 0), 
+        )
         self.relu = nn.ReLU()
 
-        self.LayersPooling = [nn.MaxPool1d(kernel_size=2, stride=2, padding=0) for _ in range(num_layers)]
         self.fc1 = nn.LazyLinear(1024)
         self.fc2 = nn.Linear(1024, 256)
-        self.fc3 = nn.LazyLinear(256, num_classes)
+        self.fc3 = nn.Linear(256, self.num_classes)
     
     def forward(self, x):
         
-        for layer, pool in zip(self.LayersConv1D, self.LayersPooling):
-            x = layer(x)
-            x = self.relu(x)
-            x = pool(x)        
+        x = self.fe(x)
+        
         # Global Average Pooling (GAP)
         x = torch.mean(x, dim=2)  # Calculate the mean along the spatial dimension (width)
+        # x = x.view(x.size(0), -1, x.size(1))
         x = self.relu(self.fc1(x))
         x = self.relu(self.fc2(x))
         x = self.fc3(x) 

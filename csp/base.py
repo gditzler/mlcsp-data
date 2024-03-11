@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import torch 
 from torch import optim
 import torch.nn as nn
 import torchmetrics
@@ -50,30 +51,30 @@ class CSPModel(L.LightningModule):
     def training_step(self, batch, batch_idx):
         x, y = batch
         phat = self(x)
-        loss = nn.functional.cross_entropy(phat, y)
+        loss = nn.functional.cross_entropy(phat, y.type(torch.long))
         self.log('train_loss', loss)
-        self.log('train_acc1', self.acc1(phat, y))
-        self.log('train_acc2', self.acc2(phat, y))
+        self.log('train_acc1', self.acc1(phat, y.type(torch.long)))
+        self.log('train_acc2', self.acc2(phat, y.type(torch.long)))
         # self.log('train_auc', self.auc(phat, y))
         return loss
     
     def validation_step(self, batch, batch_index):
         x, y = batch
         phat = self(x)
-        loss = nn.functional.cross_entropy(phat, y)
+        loss = nn.functional.cross_entropy(phat, y.type(torch.long))
         self.log('valid_loss', loss)
-        self.log('valid_acc1', self.acc1(phat, y))
-        self.log('valid_acc2', self.acc2(phat, y))
+        self.log('valid_acc1', self.acc1(phat, y.type(torch.long)))
+        self.log('valid_acc2', self.acc2(phat, y.type(torch.long)))
         # self.log('valid_auc', self.auc(phat, y))
         return loss
     
     def test_step(self, batch, batch_index):
         x, y = batch
         phat = self(x)
-        loss = nn.functional.cross_entropy(phat, y)
+        loss = nn.functional.cross_entropy(phat, y.type(torch.long))
         self.log('test_loss', loss)
-        self.log('test_acc1', self.acc1(phat, y))
-        self.log('test_acc2', self.acc2(phat, y))
+        self.log('test_acc1', self.acc1(phat, y.type(torch.long)))
+        self.log('test_acc2', self.acc2(phat, y.type(torch.long)))
         # self.log('test_auc', self.auc(phat, y))
         return loss
 
